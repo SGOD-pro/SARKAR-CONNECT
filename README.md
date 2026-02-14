@@ -214,7 +214,3 @@ vercel
 ## 📝 License
 
 MIT
-
-## 👥 Team
-
-Built for AI for Bharat Hackathon 2024
