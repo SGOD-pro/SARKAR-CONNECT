@@ -1,36 +1,220 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SarkarConnect - AI for Bharat
 
-## Getting Started
+WhatsApp-based government scheme discovery for rural India. Built for 24-hour hackathon.
 
-First, run the development server:
+## 🎯 Problem
+
+- **₹1.84 lakh crore** in unclaimed welfare funds in India
+- 40% of eligible farmers don't know about PM-KISAN
+- Information trapped in English PDFs on government websites
+- Middlemen charge ₹500 for free schemes
+
+## 💡 Solution
+
+WhatsApp bot that:
+- Works on basic phones (₹1,500 JioPhones)
+- Responds in Hindi/English
+- Filters by eligibility (age, income)
+- Provides direct application links
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env` file:
+
+```
+TWILIO_ACCOUNT_SID=your_account_sid
+TWILIO_AUTH_TOKEN=your_auth_token
+```
+
+### 3. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Server runs on [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧪 Testing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Local Testing (Without Twilio)
 
-## Learn More
+Run the test script:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+node test-webhook.js
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Or use curl/Postman:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+curl -X POST http://localhost:3000/api/webhook \
+  -d "Body=farming schemes" \
+  -H "Content-Type: application/x-www-form-urlencoded"
+```
 
-## Deploy on Vercel
+### Testing with Twilio Sandbox
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Install ngrok**:
+   ```bash
+   ngrok http 3000
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Configure Twilio**:
+   - Go to Twilio Console → Messaging → Try it out → WhatsApp Sandbox
+   - Set webhook URL: `https://your-ngrok-url.ngrok.io/api/webhook`
+   - Save
+
+3. **Test on WhatsApp**:
+   - Send `join <sandbox-code>` to Twilio WhatsApp number
+   - Send: `farming schemes`
+   - You should receive scheme recommendations!
+
+## 📱 Example Queries
+
+| Query | Response |
+|-------|----------|
+| `farming schemes` | PM-KISAN, Fasal Bima, etc. |
+| `health age 65` | Ayushman Bharat, NSAP (filtered by age) |
+| `खेती योजना` | Hindi response with schemes |
+| `housing income 50000` | PMAY (filtered by income) |
+
+## 🏗️ Architecture
+
+```
+User (WhatsApp) 
+    ↓
+Twilio WhatsApp API
+    ↓
+Next.js Webhook (/api/webhook)
+    ↓
+[Entity Extractor] → age, income
+    ↓
+[Keyword Matcher] → category detection
+    ↓
+[Eligibility Filter] → remove unqualified schemes
+    ↓
+[Response Formatter] → format for WhatsApp
+    ↓
+TwiML Response
+    ↓
+User sees formatted schemes
+```
+
+## 📂 Project Structure
+
+```
+├── public/
+│   └── schemes.json          # 10 government schemes (expand to 30)
+├── src/
+│   ├── app/
+│   │   └── api/
+│   │       └── webhook/
+│   │           └── route.ts  # Twilio webhook handler
+│   ├── lib/
+│   │   ├── extractor.ts      # Extract age/income from messages
+│   │   ├── matcher.ts        # Keyword matching + eligibility filter
+│   │   ├── language.ts       # Detect Hindi/English
+│   │   └── formatter.ts      # Format response for WhatsApp
+│   └── types/
+│       └── scheme.ts         # TypeScript interfaces
+└── test-webhook.js           # Local testing script
+```
+
+## 🔧 Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Messaging**: Twilio WhatsApp API
+- **Database**: JSON file (no DB needed for 30 schemes)
+- **Deployment**: Vercel (recommended)
+
+## 📊 Current Status
+
+✅ Core MVP Complete:
+- [x] Scheme database (10 schemes, expand to 30)
+- [x] Entity extraction (age, income)
+- [x] Keyword matching
+- [x] Eligibility filtering
+- [x] Language detection (Hindi/English)
+- [x] Response formatting
+- [x] Twilio webhook handler
+
+🚧 Next Steps:
+- [ ] Add 20 more schemes to reach 30
+- [ ] Build landing page
+- [ ] Deploy to Vercel
+- [ ] Create demo video
+- [ ] Prepare presentation
+
+## 🎨 Adding More Schemes
+
+Edit `public/schemes.json`:
+
+```json
+{
+  "id": "scheme-id",
+  "name": "Scheme Name",
+  "nameHindi": "योजना का नाम",
+  "category": "agriculture|health|housing|education|women|employment|senior",
+  "benefits": "What user gets",
+  "eligibility": {
+    "minAge": 18,
+    "maxAge": 60,
+    "occupation": ["farmer"],
+    "incomeLimit": 100000,
+    "states": "all"
+  },
+  "documents": ["Aadhaar", "Bank account"],
+  "applicationProcess": "How to apply + URL",
+  "keywords": ["english", "hindi", "हिंदी", "slang"]
+}
+```
+
+**Critical**: Add extensive keywords in both English and Hindi!
+
+## 🚀 Deployment
+
+### Deploy to Vercel
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Update Twilio webhook to production URL
+# https://your-app.vercel.app/api/webhook
+```
+
+## 🐛 Troubleshooting
+
+**Webhook not receiving messages?**
+- Check ngrok URL is correct
+- Verify Twilio webhook configuration
+- Check console logs for errors
+
+**No schemes matching?**
+- Add more keywords to schemes.json
+- Check case sensitivity (should be case-insensitive)
+- Verify query contains valid keywords
+
+**Hindi not working?**
+- Check language detection regex
+- Verify scheme nameHindi fields are populated
+
+## 📝 License
+
+MIT
+
+## 👥 Team
+
+Built for AI for Bharat Hackathon 2024

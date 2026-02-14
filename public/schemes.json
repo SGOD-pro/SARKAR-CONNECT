@@ -1,0 +1,290 @@
+{
+  "schemes": [
+    {
+      "id": "pm-kisan",
+      "name": "PM-Kisan Samman Nidhi",
+      "nameHindi": "पीएम किसान सम्मान निधि",
+      "category": "agriculture",
+      "benefits": "₹6,000 per year in 3 installments of ₹2,000 each",
+      "eligibility": {
+        "minAge": 18,
+        "occupation": ["farmer", "agricultural laborer"],
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Bank account details", "Land ownership papers"],
+      "applicationProcess": "Visit nearest Common Service Center or apply online at pmkisan.gov.in",
+      "keywords": ["farmer", "farming", "agriculture", "kisan", "crop", "land", "खेती", "किसान", "कृषि", "fasal", "खेत"]
+    },
+    {
+      "id": "mgnrega",
+      "name": "Mahatma Gandhi National Rural Employment Guarantee Act",
+      "nameHindi": "महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी अधिनियम",
+      "category": "employment",
+      "benefits": "100 days of guaranteed wage employment per year",
+      "eligibility": {
+        "minAge": 18,
+        "occupation": ["rural household"],
+        "states": "all"
+      },
+      "documents": ["Job card", "Aadhaar card", "Bank account"],
+      "applicationProcess": "Apply at local Gram Panchayat office or online at nrega.nic.in",
+      "keywords": ["employment", "job", "work", "wage", "nrega", "mgnrega", "रोजगार", "काम", "नरेगा"]
+    },
+    {
+      "id": "ayushman-bharat",
+      "name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana",
+      "nameHindi": "आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना",
+      "category": "health",
+      "benefits": "Free health insurance coverage up to ₹5 lakh per family per year",
+      "eligibility": {
+        "incomeLimit": 100000,
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Ration card", "Income certificate"],
+      "applicationProcess": "Visit nearest Ayushman Mitra or hospital, or check eligibility at pmjay.gov.in",
+      "keywords": ["health", "hospital", "insurance", "medical", "treatment", "ayushman", "स्वास्थ्य", "अस्पताल", "बीमा", "इलाज"]
+    },
+    {
+      "id": "pmay-gramin",
+      "name": "Pradhan Mantri Awas Yojana - Gramin",
+      "nameHindi": "प्रधानमंत्री आवास योजना - ग्रामीण",
+      "category": "housing",
+      "benefits": "Financial assistance of ₹1.20 lakh for plain areas and ₹1.30 lakh for hilly areas",
+      "eligibility": {
+        "minAge": 18,
+        "occupation": ["rural household without pucca house"],
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Bank account", "Income certificate", "Land documents"],
+      "applicationProcess": "Apply through Gram Panchayat or online at pmayg.nic.in",
+      "keywords": ["housing", "house", "home", "awas", "ghar", "आवास", "घर", "मकान"]
+    },
+    {
+      "id": "pm-ujjwala",
+      "name": "Pradhan Mantri Ujjwala Yojana",
+      "nameHindi": "प्रधानमंत्री उज्ज्वला योजना",
+      "category": "women",
+      "benefits": "Free LPG connection with financial assistance for first refill and stove",
+      "eligibility": {
+        "minAge": 18,
+        "occupation": ["BPL household women"],
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "BPL card", "Bank account", "Address proof"],
+      "applicationProcess": "Apply at nearest LPG distributor or online at pmuy.gov.in",
+      "keywords": ["lpg", "gas", "cylinder", "ujjwala", "cooking", "रसोई", "गैस", "सिलेंडर", "उज्ज्वला"]
+    },
+    {
+      "id": "nsap",
+      "name": "National Social Assistance Programme",
+      "nameHindi": "राष्ट्रीय सामाजिक सहायता कार्यक्रम",
+      "category": "senior",
+      "benefits": "Monthly pension of ₹200-500 for elderly, widows, and disabled persons",
+      "eligibility": {
+        "minAge": 60,
+        "incomeLimit": 100000,
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Age proof", "Income certificate", "Bank account"],
+      "applicationProcess": "Apply at local Panchayat or District Social Welfare Office",
+      "keywords": ["pension", "elderly", "senior citizen", "old age", "वृद्धावस्था", "पेंशन", "बुजुर्ग"]
+    },
+    {
+      "id": "fasal-bima",
+      "name": "Pradhan Mantri Fasal Bima Yojana",
+      "nameHindi": "प्रधानमंत्री फसल बीमा योजना",
+      "category": "agriculture",
+      "benefits": "Crop insurance against natural calamities, pests, and diseases",
+      "eligibility": {
+        "minAge": 18,
+        "occupation": ["farmer"],
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Land records", "Bank account", "Sowing certificate"],
+      "applicationProcess": "Apply through bank, CSC, or online at pmfby.gov.in",
+      "keywords": ["crop insurance", "fasal bima", "insurance", "farming", "फसल", "बीमा", "खेती"]
+    },
+    {
+      "id": "eshram",
+      "name": "e-Shram Card",
+      "nameHindi": "ई-श्रम कार्ड",
+      "category": "employment",
+      "benefits": "Registration for unorganized workers, access to social security schemes",
+      "eligibility": {
+        "minAge": 16,
+        "maxAge": 59,
+        "occupation": ["unorganized worker"],
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Bank account", "Mobile number"],
+      "applicationProcess": "Register online at eshram.gov.in or through CSC",
+      "keywords": ["worker", "labor", "eshram", "registration", "unorganized", "मजदूर", "श्रमिक", "कामगार"]
+    },
+    {
+      "id": "ddu-gky",
+      "name": "Deen Dayal Upadhyaya Grameen Kaushalya Yojana",
+      "nameHindi": "दीन दयाल उपाध्याय ग्रामीण कौशल्य योजना",
+      "category": "education",
+      "benefits": "Free skill training and placement assistance for rural youth",
+      "eligibility": {
+        "minAge": 15,
+        "maxAge": 35,
+        "occupation": ["rural youth"],
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Age proof", "Address proof"],
+      "applicationProcess": "Apply through Project Implementing Agencies or online at ddugky.gov.in",
+      "keywords": ["skill", "training", "education", "youth", "job", "कौशल", "प्रशिक्षण", "शिक्षा", "युवा"]
+    },
+    {
+      "id": "nrlm",
+      "name": "National Rural Livelihood Mission",
+      "nameHindi": "राष्ट्रीय ग्रामीण आजीविका मिशन",
+      "category": "women",
+      "benefits": "Self-help group formation, skill training, and financial assistance for women",
+      "eligibility": {
+        "minAge": 18,
+        "occupation": ["rural women"],
+        "states": "all"
+      },
+      "documents": ["Aadhaar card", "Bank account", "Address proof"],
+      "applicationProcess": "Contact local Self Help Group or apply through Block office",
+      "keywords": ["women", "self help group", "shg", "livelihood", "mahila", "महिला", "स्वयं सहायता समूह", "आजीविका"]
+    },
+    {
+      "id": "pm-ddky",
+      "name": "PM Dhan-Dhaanya Krishi Yojana",
+      "nameHindi": "पीएम धन-धान्य कृषि योजना",
+      "category": "agriculture",
+      "benefits": "Financial support for 100 agri-districts to improve pulse and oilseed productivity.",
+      "eligibility": { "minAge": 18, "occupation": ["farmer"], "states": "all" },
+      "documents": ["Land records", "Aadhaar", "Bank details"],
+      "applicationProcess": "Apply through Block Agriculture Office or PM-DDKY portal.",
+      "keywords": ["pulses", "seeds", "productivity", "dhan dhanya", "agriculture", "दाल", "बीज", "कृषि"]
+    },
+    {
+      "id": "pmksy",
+      "name": "PM Krishi Sinchayee Yojana",
+      "nameHindi": "प्रधानमंत्री कृषि सिंचाई योजना",
+      "category": "agriculture",
+      "benefits": "Subsidies on drip and sprinkler irrigation systems (Per Drop More Crop).",
+      "eligibility": { "occupation": ["farmer"], "states": "all" },
+      "documents": ["Aadhaar card", "Land ownership", "Bank passbook"],
+      "applicationProcess": "Apply via state agriculture department website.",
+      "keywords": ["irrigation", "water", "drip", "sprinkler", "sinchayee", "सिंचाई", "पानी"]
+    },
+    {
+      "id": "paramparagat-krishi",
+      "name": "Paramparagat Krishi Vikas Yojana",
+      "nameHindi": "परंपरागत कृषि विकास योजना",
+      "category": "agriculture",
+      "benefits": "Financial aid for organic farming and cluster development (₹50,000 per hectare).",
+      "eligibility": { "occupation": ["farmer"], "states": "all" },
+      "documents": ["Soil health card", "Aadhaar", "Land records"],
+      "applicationProcess": "Register through local agriculture office.",
+      "keywords": ["organic", "pesticide free", "natural farming", "jaivik", "जैविक खेती", "प्राकृतिक"]
+    },
+
+    {
+      "id": "pm-rahat",
+      "name": "PM RAHAT Scheme",
+      "nameHindi": "पीएम राहत योजना",
+      "category": "health",
+      "benefits": "Cashless treatment up to ₹1.5 lakh for road accident victims within the 'Golden Hour'.",
+      "eligibility": { "states": "all", "note": "Universal coverage for accident victims" },
+      "documents": ["Not required for emergency, Aadhaar for claim discharge"],
+      "applicationProcess": "Automatic eligibility at any empanelled hospital during emergency.",
+      "keywords": ["accident", "emergency", "treatment", "hospital", "cashless", "दुर्घटना", "इलाज"]
+    },
+    {
+      "id": "pmjjby",
+      "name": "PM Jeevan Jyoti Bima Yojana",
+      "nameHindi": "प्रधानमंत्री जीवन ज्योति बीमा योजना",
+      "category": "insurance",
+      "benefits": "Life insurance cover of ₹2 lakh on death due to any reason.",
+      "eligibility": { "minAge": 18, "maxAge": 50, "states": "all" },
+      "documents": ["Aadhaar", "Bank account with auto-debit consent"],
+      "applicationProcess": "Apply through your bank branch.",
+      "keywords": ["life insurance", "death claim", "bima", "security", "जीवन बीमा"]
+    },
+    {
+      "id": "pmsby",
+      "name": "PM Suraksha Bima Yojana",
+      "nameHindi": "प्रधानमंत्री सुरक्षा बीमा योजना",
+      "category": "insurance",
+      "benefits": "Accidental death/disability cover of ₹2 lakh at a premium of ₹20/year.",
+      "eligibility": { "minAge": 18, "maxAge": 70, "states": "all" },
+      "documents": ["Aadhaar", "Bank account"],
+      "applicationProcess": "Enroll via SMS or Net Banking or at the bank branch.",
+      "keywords": ["accident insurance", "disability", "cheap insurance", "सुरक्षा बीमा"]
+    },
+
+    {
+      "id": "lakhpati-didi",
+      "name": "Lakhpati Didi Initiative",
+      "nameHindi": "लखपति दीदी योजना",
+      "category": "women",
+      "benefits": "Interest-free loans and skill training to help SHG women earn ₹1 lakh+ per year.",
+      "eligibility": { "occupation": ["SHG members"], "states": "all" },
+      "documents": ["SHG ID card", "Aadhaar", "Bank account"],
+      "applicationProcess": "Contact local Self-Help Group or Block Mission Management Unit.",
+      "keywords": ["income", "women", "business", "shg", "lakhpati", "लखपति दीदी", "महिला"]
+    },
+    {
+      "id": "drone-didi",
+      "name": "Namo Drone Didi Scheme",
+      "nameHindi": "नमो ड्रोन दीदी योजना",
+      "category": "women",
+      "benefits": "Training and provision of drones to women SHGs for agricultural services.",
+      "eligibility": { "occupation": ["SHG members"], "states": "all" },
+      "documents": ["Aadhaar", "SHG membership proof"],
+      "applicationProcess": "Apply through NRLM block offices.",
+      "keywords": ["drone", "technology", "agriculture", "women training", "ड्रोन"]
+    },
+    {
+      "id": "sukanya-samriddhi",
+      "name": "Sukanya Samriddhi Yojana",
+      "nameHindi": "सुकन्या समृद्धि योजना",
+      "category": "women",
+      "benefits": "High-interest savings scheme for girl child education and marriage.",
+      "eligibility": { "maxAge": 10, "gender": "female", "states": "all" },
+      "documents": ["Birth certificate", "Aadhaar of parent"],
+      "applicationProcess": "Open account at any Post Office or commercial bank.",
+      "keywords": ["girl child", "savings", "marriage", "education", "sukanya", "बेटी", "बचत"]
+    },
+
+    {
+      "id": "pm-mudra",
+      "name": "PM MUDRA Yojana",
+      "nameHindi": "प्रधानमंत्री मुद्रा योजना",
+      "category": "employment",
+      "benefits": "Loans up to ₹20 lakh for non-farm small/micro enterprises (Limit increased in 2025).",
+      "eligibility": { "states": "all", "occupation": ["small business owner", "entrepreneur"] },
+      "documents": ["Business plan", "ID proof", "Address proof", "Category certificate"],
+      "applicationProcess": "Apply online at udyamimitra.in or visit any bank.",
+      "keywords": ["loan", "business", "startup", "shop", "mudra", "कर्ज", "व्यापार"]
+    },
+    {
+      "id": "pm-vishwakarma",
+      "name": "PM Vishwakarma",
+      "nameHindi": "पीएम विश्वकर्मा योजना",
+      "category": "employment",
+      "benefits": "Toolkit incentive of ₹15,000, collateral-free loans, and skill training for artisans.",
+      "eligibility": { "occupation": ["artisans", "craftspeople"], "states": "all" },
+      "documents": ["Aadhaar", "Bank passbook", "Trade proof"],
+      "applicationProcess": "Apply through CSC (Common Service Center).",
+      "keywords": ["carpenter", "blacksmith", "potter", "tailor", "artisan", "कारीगर", "विश्वकर्मा"]
+    },
+    {
+      "id": "pm-jug-abhiyan",
+      "name": "PM Janjatiya Unnat Gram Abhiyan",
+      "nameHindi": "पीएम जनजातीय उन्नत ग्राम अभियान",
+      "category": "rural",
+      "benefits": "Saturation coverage of infrastructure and services in 63,000 tribal-majority villages.",
+      "eligibility": { "occupation": ["ST community"], "states": "all" },
+      "documents": ["Caste certificate", "Aadhaar", "Address proof"],
+      "applicationProcess": "Direct implementation through tribal welfare department and Gram Sabha.",
+      "keywords": ["tribal", "st", "village infrastructure", "janjatiya", "आदिवासी", "गांव"]
+    }
+  ]
+}
