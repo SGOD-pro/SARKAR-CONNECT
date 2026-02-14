@@ -1,4 +1,4 @@
-# SarkarConnect - AI for Bharat
+# SarkarConnect
 
 WhatsApp-based government scheme discovery for rural India. Built for 24-hour hackathon.
 

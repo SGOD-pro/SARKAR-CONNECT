@@ -4,6 +4,7 @@ import { extractEntities } from '@/lib/extractor';
 import { matchSchemes } from '@/lib/matcher';
 import { detectLanguage } from '@/lib/language';
 import { formatResponse } from '@/lib/formatter';
+import { translateWithSarvam } from '@/lib/sarvam-translator';
 
 const MessagingResponse = twilio.twiml.MessagingResponse;
 
@@ -32,8 +33,14 @@ export async function POST(req: NextRequest) {
     const schemes = matchSchemes(body, age, income);
     console.log(`Found ${schemes.length} matching schemes`);
     
-    // Format response
-    const responseText = formatResponse(schemes, language);
+    // Format response (always in English first)
+    let responseText = formatResponse(schemes, 'en');
+    
+    // Translate if not English
+    if (language !== 'en') {
+      console.log(`Translating to ${language} using Sarvam.ai`);
+      responseText = await translateWithSarvam(responseText, language);
+    }
     
     // Return TwiML
     return createTwiMLResponse(responseText);

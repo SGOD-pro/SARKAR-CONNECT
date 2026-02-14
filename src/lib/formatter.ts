@@ -1,6 +1,6 @@
 import { Scheme } from '@/types/scheme';
 
-export function formatResponse(schemes: Scheme[], language: 'en' | 'hi' = 'en'): string {
+export function formatResponse(schemes: Scheme[], language: string = 'en'): string {
   // No matches
   if (schemes.length === 0) {
     return language === 'hi'
@@ -33,7 +33,7 @@ export function formatResponse(schemes: Scheme[], language: 'en' | 'hi' = 'en'):
   return header + schemesList + footer;
 }
 
-function formatEligibility(scheme: Scheme, language: 'en' | 'hi'): string {
+function formatEligibility(scheme: Scheme, language: string): string {
   const parts: string[] = [];
   const { minAge, maxAge, occupation, incomeLimit } = scheme.eligibility;
   

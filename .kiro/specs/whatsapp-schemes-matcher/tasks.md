@@ -1,453 +1,261 @@
-# Implementation Tasks - AI for Bharat (AI-Optimized)
+# Implementation Tasks - AI for Bharat (UPDATED with Sarvam.ai)
 
 ## Overview
 
 This task list is optimized for AI code generation tools (Cursor, Copilot, v0, etc.).
-Each task is atomic, has clear inputs/outputs, and references specific requirements.
+**NEW:** Phase 2 now includes Sarvam.ai integration for Indian language support.
 
 **Execution Strategy:**
-1. Complete Phase 1 (Tasks 1-8) before moving to Phase 2
-2. Test after each checkpoint
-3. Skip optional tasks if running out of time
+1. Phase 1 (Tasks 1-9) ✅ COMPLETE
+2. Phase 2 (Tasks 10-17) ⏳ IN PROGRESS
+3. Test after each task
+4. 6 hours remaining
 
 ---
 
-## PHASE 1: CORE MVP (Priority: CRITICAL)
+## PHASE 1: CORE MVP ✅ COMPLETE
 
-### Task 1: Project Setup
-**Time:** 30 minutes
-**Dependencies:** None
-
-**Steps:**
-```bash
-# Create Next.js project
-npx create-next-app@latest ai-for-bharat --typescript --tailwind --app --src-dir
-
-# Install dependencies
-cd ai-for-bharat
-npm install twilio
-npm install -D @types/node
-
-# Create folder structure
-mkdir -p src/lib src/types public
-```
-
-**Acceptance:**
-- ✅ Next.js app runs on localhost:3000
-- ✅ TypeScript enabled
-- ✅ Tailwind working
-- ✅ Folder structure created
-
-**Requirements:** Setup foundation
+Tasks 1-9 are complete. Do not modify.
 
 ---
 
-### Task 2: Define TypeScript Interfaces
-**Time:** 15 minutes
-**Dependencies:** Task 1
-
-**File:** `src/types/scheme.ts`
-
-**Code to generate:**
-```typescript
-export interface Scheme {
-  id: string;
-  name: string;
-  nameHindi: string;
-  category: 'agriculture' | 'health' | 'housing' | 'education' | 'women' | 'employment' | 'senior';
-  benefits: string;
-  eligibility: {
-    minAge?: number;
-    maxAge?: number;
-    occupation?: string[];
-    incomeLimit?: number;
-    states?: string | string[];
-  };
-  documents: string[];
-  applicationProcess: string;
-  keywords: string[];
-}
-
-export interface UserQuery {
-  message: string;
-  age?: number;
-  income?: number;
-  language?: 'en' | 'hi';
-}
-
-export interface ExtractedEntities {
-  age?: number;
-  income?: number;
-}
-```
-
-**Acceptance:**
-- ✅ File compiles without errors
-- ✅ All interfaces exported
-- ✅ Optional fields marked with `?`
-
-**Requirements:** R7
+## PHASE 2: WINNING ADDITIONS (Priority: CRITICAL)
 
 ---
 
-### Task 3: Create Schemes Database (CRITICAL)
-**Time:** 3 hours
-**Dependencies:** Task 2
+### Task 10: Add Sarvam.ai Translation (CRITICAL - DO FIRST)
 
-**File:** `public/schemes.json`
-
-**Instructions for AI:**
-Create JSON file with 30 government schemes. Each scheme must include:
-
-**Required schemes (minimum 10):**
-1. PM-Kisan Samman Nidhi (agriculture)
-2. MGNREGA (employment)
-3. Ayushman Bharat (health)
-4. Pradhan Mantri Awas Yojana (housing)
-5. PM Ujjwala Yojana (women)
-6. National Social Assistance Programme (senior)
-7. PM Fasal Bima Yojana (agriculture)
-8. e-Shram Card (employment)
-9. DDU-GKY (education)
-10. National Rural Livelihood Mission (women)
-
-**Add 20 more schemes** from categories: agriculture, health, housing, education, women welfare, employment, senior citizens.
-
-**Example structure:**
-```json
-{
-  "schemes": [
-    {
-      "id": "pm-kisan",
-      "name": "PM-Kisan Samman Nidhi",
-      "nameHindi": "पीएम किसान सम्मान निधि",
-      "category": "agriculture",
-      "benefits": "₹6,000 per year in 3 installments of ₹2,000 each",
-      "eligibility": {
-        "minAge": 18,
-        "occupation": ["farmer", "agricultural laborer"],
-        "incomeLimit": null,
-        "states": "all"
-      },
-      "documents": ["Aadhaar card", "Bank account details", "Land ownership papers"],
-      "applicationProcess": "Visit nearest Common Service Center or apply online at pmkisan.gov.in",
-      "keywords": [
-        "farmer", "farming", "agriculture", "kisan", "crop", "land", "खेती", "किसान", "कृषि", "fasal", "खेत"
-      ]
-    }
-  ]
-}
-```
-
-**Critical points:**
-- Include BOTH English and Hindi keywords
-- Add slang/common terms (e.g., "ghar" for housing, "dawai" for medicine)
-- Be specific about eligibility (age ranges, income limits)
-- Include actual government website URLs
-
-**Acceptance:**
-- ✅ 30 schemes minimum
-- ✅ All required fields present
-- ✅ Keywords include English + Hindi
-- ✅ Valid JSON (no syntax errors)
-
-**Requirements:** R1
-
----
-
-### Task 4: Build Entity Extractor
 **Time:** 1 hour
-**Dependencies:** Task 2
+**Dependencies:** Phase 1 complete
+**Priority:** HIGHEST (Judges will love Indian AI)
 
-**File:** `src/lib/extractor.ts`
+#### Step 1: Get Sarvam.ai API Key (15 minutes)
 
-**Code to generate:**
-```typescript
-import { ExtractedEntities } from '@/types/scheme';
+**Manual Steps:**
+1. Go to https://www.sarvam.ai/
+2. Click "Get Started" or "API Access"
+3. Sign up with email
+4. Verify email
+5. Go to Dashboard
+6. Find "API Keys" section
+7. Click "Generate New Key"
+8. Copy the API key (starts with `sarvam_`)
+9. Save it securely
 
-export function extractEntities(message: string): ExtractedEntities {
-  const entities: ExtractedEntities = {};
-  
-  // Extract age
-  const agePatterns = [
-    /age[\s:]*(\d+)/i,           // "age 35" or "age: 35"
-    /(\d+)[\s]*(?:year|yr|साल)/i, // "35 years" or "35 साल"
-    /I am (\d+)/i,                // "I am 45"
-    /मैं (\d+)/,                   // "मैं 35"
-  ];
-  
-  for (const pattern of agePatterns) {
-    const match = message.match(pattern);
-    if (match) {
-      const age = parseInt(match[1]);
-      if (!isNaN(age) && age > 0 && age < 120) {
-        entities.age = age;
-        break;
-      }
-    }
-  }
-  
-  // Extract income
-  const incomePatterns = [
-    /income[\s:]*(\d+)/i,        // "income 15000"
-    /₹[\s]*(\d+)/,                // "₹15000"
-    /(?:earn|salary)[\s:]*(\d+)/i, // "earning 20000"
-    /(\d+)[\s]*(?:rupee|rs)/i,   // "15000 rupees"
-  ];
-  
-  for (const pattern of incomePatterns) {
-    const match = message.match(pattern);
-    if (match) {
-      const income = parseInt(match[1]);
-      if (!isNaN(income) && income > 0) {
-        entities.income = income;
-        break;
-      }
-    }
-  }
-  
-  return entities;
-}
+#### Step 2: Add Environment Variable (2 minutes)
+
+**File:** `.env.local`
+
+**Add this line:**
+```env
+SARVAM_API_KEY=your_actual_api_key_here
 ```
 
-**Test cases to verify:**
-- `extractEntities("age 35")` → `{ age: 35 }`
-- `extractEntities("income 15000")` → `{ income: 15000 }`
-- `extractEntities("I am 45 earning ₹20000")` → `{ age: 45, income: 20000 }`
-- `extractEntities("farming schemes")` → `{}`
+**Replace `your_actual_api_key_here` with the key you copied**
 
-**Acceptance:**
-- ✅ Extracts age from multiple formats
-- ✅ Extracts income from multiple formats
-- ✅ Returns empty object if nothing found
-- ✅ Handles edge cases (invalid numbers, negative values)
+**IMPORTANT:** Do NOT commit this file to GitHub. It's already in `.gitignore`.
 
-**Requirements:** R2
+#### Step 3: Create Sarvam.ai Translator (15 minutes)
 
----
+**File:** `src/lib/sarvam-translator.ts`
 
-### Task 5: Build Keyword Matcher with Eligibility Filter
-**Time:** 2 hours
-**Dependencies:** Task 2, Task 3
+**Prompt for AI:**
+```
+Create a new file src/lib/sarvam-translator.ts with the following function:
 
-**File:** `src/lib/matcher.ts`
+translateWithSarvam(text: string, targetLang: string): Promise<string>
 
-**Code to generate:**
+Requirements:
+1. If targetLang is 'en', return text unchanged
+2. Map targetLang codes to Sarvam.ai format:
+   - 'hi' → 'hi-IN' (Hindi)
+   - 'ta' → 'ta-IN' (Tamil)
+   - 'te' → 'te-IN' (Telugu)
+   - 'bn' → 'bn-IN' (Bengali)
+   - 'mr' → 'mr-IN' (Marathi)
+   - 'gu' → 'gu-IN' (Gujarati)
+   - 'kn' → 'kn-IN' (Kannada)
+   - 'ml' → 'ml-IN' (Malayalam)
+   - 'pa' → 'pa-IN' (Punjabi)
+   - 'or' → 'or-IN' (Odia)
+
+3. Call Sarvam.ai API:
+   - Endpoint: https://api.sarvam.ai/translate
+   - Method: POST
+   - Headers:
+     - Content-Type: application/json
+     - API-Subscription-Key: process.env.SARVAM_API_KEY
+   - Body:
+     - input: text
+     - source_language_code: 'en-IN'
+     - target_language_code: mapped language
+     - speaker_gender: 'Male'
+     - mode: 'formal'
+     - model: 'mayura:v1'
+     - enable_preprocessing: true
+
+4. Return translated_text from response
+5. On error, log and return original text (fallback)
+6. Use try-catch for error handling
+```
+
+**Complete Code:**
 ```typescript
-import { Scheme } from '@/types/scheme';
-import schemesData from '../../public/schemes.json';
-
-interface MatchResult {
-  scheme: Scheme;
-  score: number;
-}
-
-export function matchSchemes(
-  query: string, 
-  age?: number, 
-  income?: number
-): Scheme[] {
-  const schemes: Scheme[] = schemesData.schemes;
+export async function translateWithSarvam(
+  text: string,
+  targetLang: string
+): Promise<string> {
+  // Return English as-is
+  if (targetLang === 'en') {
+    return text;
+  }
   
-  // Step 1: Normalize query
-  const normalizedQuery = query.toLowerCase().trim();
-  const queryWords = normalizedQuery.split(/\s+/);
+  // Map language codes to Sarvam.ai format
+  const langMap: Record<string, string> = {
+    'hi': 'hi-IN',
+    'ta': 'ta-IN',
+    'te': 'te-IN',
+    'bn': 'bn-IN',
+    'mr': 'mr-IN',
+    'gu': 'gu-IN',
+    'kn': 'kn-IN',
+    'ml': 'ml-IN',
+    'pa': 'pa-IN',
+    'or': 'or-IN'
+  };
   
-  // Step 2: Calculate relevance scores
-  const results: MatchResult[] = schemes.map(scheme => ({
-    scheme,
-    score: calculateScore(queryWords, scheme.keywords)
-  }));
+  const targetLangCode = langMap[targetLang] || 'hi-IN';
   
-  // Step 3: Filter by score > 0
-  let filtered = results.filter(r => r.score > 0);
-  
-  // Step 4: Apply eligibility filtering
-  if (age !== undefined || income !== undefined) {
-    filtered = filtered.filter(r => {
-      const { minAge, maxAge, incomeLimit } = r.scheme.eligibility;
-      
-      // Age check
-      if (age !== undefined) {
-        if (minAge !== undefined && age < minAge) return false;
-        if (maxAge !== undefined && age > maxAge) return false;
-      }
-      
-      // Income check
-      if (income !== undefined && incomeLimit !== undefined) {
-        if (income > incomeLimit) return false;
-      }
-      
-      return true;
+  try {
+    const response = await fetch('https://api.sarvam.ai/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'API-Subscription-Key': process.env.SARVAM_API_KEY!
+      },
+      body: JSON.stringify({
+        input: text,
+        source_language_code: 'en-IN',
+        target_language_code: targetLangCode,
+        speaker_gender: 'Male',
+        mode: 'formal',
+        model: 'mayura:v1',
+        enable_preprocessing: true
+      })
     });
-  }
-  
-  // Step 5: Sort by relevance and return top 3
-  return filtered
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3)
-    .map(r => r.scheme);
-}
-
-function calculateScore(queryWords: string[], keywords: string[]): number {
-  const normalizedKeywords = keywords.map(k => k.toLowerCase());
-  let score = 0;
-  
-  for (const word of queryWords) {
-    for (const keyword of normalizedKeywords) {
-      // Bidirectional substring matching
-      if (keyword.includes(word) || word.includes(keyword)) {
-        score += 1;
-      }
+    
+    if (!response.ok) {
+      throw new Error(`Sarvam API error: ${response.status}`);
     }
+    
+    const data = await response.json();
+    return data.translated_text || text;
+    
+  } catch (error) {
+    console.error('Sarvam translation error:', error);
+    // Fallback to original text
+    return text;
   }
-  
-  return score;
 }
 ```
 
-**Test cases to verify:**
-- `matchSchemes("farming schemes")` → Returns PM-KISAN and others
-- `matchSchemes("health", 65, 5000)` → Returns schemes for seniors with low income
-- `matchSchemes("xyz123")` → Returns empty array
-- `matchSchemes("farmer", 17)` → Filters out schemes with minAge: 18
-
-**Acceptance:**
-- ✅ Case-insensitive matching
-- ✅ Returns top 3 schemes
-- ✅ Filters by age if provided
-- ✅ Filters by income if provided
-- ✅ Returns empty array if no matches
-- ✅ Never crashes (handles invalid input)
-
-**Requirements:** R3
-
----
-
-### Task 6: Build Language Detector
-**Time:** 30 minutes
-**Dependencies:** Task 2
+#### Step 4: Update Language Detector (10 minutes)
 
 **File:** `src/lib/language.ts`
 
-**Code to generate:**
+**Current Code:**
 ```typescript
 export function detectLanguage(text: string): 'en' | 'hi' {
-  // Check for Devanagari script (Hindi)
   const devanagariRegex = /[\u0900-\u097F]/;
-  
   if (devanagariRegex.test(text)) {
     return 'hi';
   }
-  
   return 'en';
 }
 ```
 
-**Test cases:**
-- `detectLanguage("farming schemes")` → `'en'`
-- `detectLanguage("खेती योजना")` → `'hi'`
-- `detectLanguage("age 35")` → `'en'`
-
-**Acceptance:**
-- ✅ Detects Hindi text correctly
-- ✅ Defaults to English
-- ✅ Handles mixed text (returns 'hi' if any Hindi characters)
-
-**Requirements:** R6
-
----
-
-### Task 7: Build Response Formatter
-**Time:** 1.5 hours
-**Dependencies:** Task 2
-
-**File:** `src/lib/formatter.ts`
-
-**Code to generate:**
+**Updated Code:**
 ```typescript
-import { Scheme } from '@/types/scheme';
-
-export function formatResponse(schemes: Scheme[], language: 'en' | 'hi' = 'en'): string {
-  // No matches
-  if (schemes.length === 0) {
-    return language === 'hi'
-      ? "क्षमा करें, कोई योजना नहीं मिली। कृपया प्रयास करें: खेती, स्वास्थ्य, आवास, शिक्षा"
-      : "Sorry, no schemes found. Try: farming, health, housing, education, employment";
-  }
+export function detectLanguage(text: string): string {
+  // Hindi (Devanagari)
+  if (/[\u0900-\u097F]/.test(text)) return 'hi';
   
-  // Format header
-  const header = language === 'hi'
-    ? `आपके लिए ${schemes.length} योजनाएं मिलीं:\n\n`
-    : `Found ${schemes.length} scheme(s) for you:\n\n`;
+  // Tamil
+  if (/[\u0B80-\u0BFF]/.test(text)) return 'ta';
   
-  // Format each scheme
-  const schemesList = schemes.map((scheme, idx) => {
-    const emoji = ['1️⃣', '2️⃣', '3️⃣'][idx] || `${idx + 1}.`;
-    const name = language === 'hi' ? scheme.nameHindi : scheme.name;
-    
-    return `${emoji} *${name}*\n` +
-           `💰 ${scheme.benefits}\n` +
-           `✅ ${formatEligibility(scheme, language)}\n` +
-           `📄 ${scheme.documents.slice(0, 2).join(', ')}\n` +
-           `🔗 ${scheme.applicationProcess}`;
-  }).join('\n\n');
+  // Telugu
+  if (/[\u0C00-\u0C7F]/.test(text)) return 'te';
   
-  // Footer
-  const footer = language === 'hi'
-    ? "\n\nअधिक जानकारी के लिए नंबर भेजें (1, 2, 3)"
-    : "\n\nReply with number for more details (1, 2, 3)";
+  // Bengali
+  if (/[\u0980-\u09FF]/.test(text)) return 'bn';
   
-  return header + schemesList + footer;
-}
-
-function formatEligibility(scheme: Scheme, language: 'en' | 'hi'): string {
-  const parts: string[] = [];
-  const { minAge, maxAge, occupation, incomeLimit } = scheme.eligibility;
+  // Gujarati
+  if (/[\u0A80-\u0AFF]/.test(text)) return 'gu';
   
-  if (minAge !== undefined) {
-    parts.push(language === 'hi' ? `उम्र: ${minAge}+` : `Age: ${minAge}+`);
-  }
+  // Kannada
+  if (/[\u0C80-\u0CFF]/.test(text)) return 'kn';
   
-  if (occupation && occupation.length > 0) {
-    parts.push(occupation[0]);
-  }
+  // Malayalam
+  if (/[\u0D00-\u0D7F]/.test(text)) return 'ml';
   
-  if (incomeLimit !== undefined) {
-    parts.push(`Income < ₹${incomeLimit}`);
-  }
+  // Gurmukhi (Punjabi)
+  if (/[\u0A00-\u0A7F]/.test(text)) return 'pa';
   
-  if (parts.length === 0) {
-    return language === 'hi' ? 'सभी नागरिक' : 'All citizens';
-  }
+  // Odia
+  if (/[\u0B00-\u0B7F]/.test(text)) return 'or';
   
-  return parts.join(', ');
+  // Marathi (uses Devanagari, but check separately if needed)
+  // For now, Marathi uses same detection as Hindi
+  
+  // Default to English
+  return 'en';
 }
 ```
 
-**Test cases:**
-- `formatResponse([], 'en')` → "Sorry, no schemes found..."
-- `formatResponse([pmKisan, mgnrega], 'en')` → Formatted with emojis
-- `formatResponse([ayushman], 'hi')` → Hindi response
+**Prompt for AI:**
+```
+Update src/lib/language.ts to detect 10 Indian languages using Unicode ranges:
+- Hindi: U+0900 to U+097F
+- Tamil: U+0B80 to U+0BFF
+- Telugu: U+0C00 to U+0C7F
+- Bengali: U+0980 to U+09FF
+- Gujarati: U+0A80 to U+0AFF
+- Kannada: U+0C80 to U+0CFF
+- Malayalam: U+0D00 to U+0D7F
+- Punjabi: U+0A00 to U+0A7F
+- Odia: U+0B00 to U+0B7F
+Return language code as string (hi, ta, te, bn, gu, kn, ml, pa, or, en)
+Default to 'en' if no match
+```
 
-**Acceptance:**
-- ✅ Shows "no matches" message when empty
-- ✅ Formats up to 3 schemes
-- ✅ Uses emojis for clarity
-- ✅ Supports Hindi responses
-- ✅ Keeps each scheme under 5 lines
+#### Step 5: Update Formatter to Accept String Language (5 minutes)
 
-**Requirements:** R5
+**File:** `src/lib/formatter.ts`
 
----
+**Change function signature:**
 
-### Task 8: Build Twilio Webhook Handler
-**Time:** 2 hours
-**Dependencies:** Tasks 4, 5, 6, 7
+**FROM:**
+```typescript
+export function formatResponse(schemes: Scheme[], language: 'en' | 'hi' = 'en'): string
+```
+
+**TO:**
+```typescript
+export function formatResponse(schemes: Scheme[], language: string = 'en'): string
+```
+
+**Prompt for AI:**
+```
+In src/lib/formatter.ts, change the language parameter type from 'en' | 'hi' to string.
+This allows it to accept any language code (ta, te, bn, etc.)
+Keep all logic the same, just change the type signature.
+```
+
+#### Step 6: Update Webhook to Use Sarvam.ai (15 minutes)
 
 **File:** `src/app/api/webhook/route.ts`
 
-**Code to generate:**
+**Current Code:**
 ```typescript
 import { NextRequest, NextResponse } from 'next/server';
 import twilio from 'twilio';
@@ -460,7 +268,6 @@ const MessagingResponse = twilio.twiml.MessagingResponse;
 
 export async function POST(req: NextRequest) {
   try {
-    // Parse form data from Twilio
     const formData = await req.formData();
     const body = formData.get('Body') as string;
     
@@ -470,22 +277,17 @@ export async function POST(req: NextRequest) {
     
     console.log(`Received message: ${body}`);
     
-    // Extract entities (age, income)
     const { age, income } = extractEntities(body);
     console.log(`Extracted entities - Age: ${age}, Income: ${income}`);
     
-    // Detect language
     const language = detectLanguage(body);
     console.log(`Detected language: ${language}`);
     
-    // Match schemes
     const schemes = matchSchemes(body, age, income);
     console.log(`Found ${schemes.length} matching schemes`);
     
-    // Format response
     const responseText = formatResponse(schemes, language);
     
-    // Return TwiML
     return createTwiMLResponse(responseText);
     
   } catch (error) {
@@ -509,206 +311,721 @@ function createTwiMLResponse(message: string): NextResponse {
 }
 ```
 
-**Test with curl:**
+**Updated Code:**
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+import twilio from 'twilio';
+import { extractEntities } from '@/lib/extractor';
+import { matchSchemes } from '@/lib/matcher';
+import { detectLanguage } from '@/lib/language';
+import { formatResponse } from '@/lib/formatter';
+import { translateWithSarvam } from '@/lib/sarvam-translator'; // NEW
+
+const MessagingResponse = twilio.twiml.MessagingResponse;
+
+export async function POST(req: NextRequest) {
+  try {
+    const formData = await req.formData();
+    const body = formData.get('Body') as string;
+    
+    if (!body) {
+      return createTwiMLResponse("Sorry, I didn't receive your message. Please try again.");
+    }
+    
+    console.log(`Received message: ${body}`);
+    
+    const { age, income } = extractEntities(body);
+    console.log(`Extracted entities - Age: ${age}, Income: ${income}`);
+    
+    const language = detectLanguage(body);
+    console.log(`Detected language: ${language}`);
+    
+    const schemes = matchSchemes(body, age, income);
+    console.log(`Found ${schemes.length} matching schemes`);
+    
+    // Format response (always in English first)
+    let responseText = formatResponse(schemes, 'en');
+    
+    // Translate if not English
+    if (language !== 'en') {
+      console.log(`Translating to ${language} using Sarvam.ai`);
+      responseText = await translateWithSarvam(responseText, language);
+    }
+    
+    return createTwiMLResponse(responseText);
+    
+  } catch (error) {
+    console.error('Webhook error:', error);
+    return createTwiMLResponse(
+      "Sorry, something went wrong. Please try again later."
+    );
+  }
+}
+
+function createTwiMLResponse(message: string): NextResponse {
+  const twiml = new MessagingResponse();
+  twiml.message(message);
+  
+  return new NextResponse(twiml.toString(), {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/xml',
+    },
+  });
+}
+```
+
+**Changes:**
+1. Import `translateWithSarvam`
+2. Always format in English first
+3. Detect language
+4. If not English, translate using Sarvam.ai
+5. Return translated response
+
+**Prompt for AI:**
+```
+Update src/app/api/webhook/route.ts:
+1. Import translateWithSarvam from '@/lib/sarvam-translator'
+2. After formatResponse, add translation logic:
+   - Format response in English first
+   - If language !== 'en', call translateWithSarvam(responseText, language)
+   - Log translation attempt
+3. Keep all error handling the same
+```
+
+#### Step 7: Test Locally (10 minutes)
+
+**Commands:**
 ```bash
+# Start dev server
+npm run dev
+
+# In another terminal, test with curl
 curl -X POST http://localhost:3000/api/webhook \
   -d "Body=farming schemes age 35" \
   -H "Content-Type: application/x-www-form-urlencoded"
 ```
 
-**Acceptance:**
-- ✅ Receives POST requests
-- ✅ Extracts Body field
-- ✅ Calls all services correctly
-- ✅ Returns valid TwiML XML
-- ✅ Handles errors gracefully
-- ✅ Logs for debugging
-
-**Requirements:** R4
-
----
-
-### CHECKPOINT 1: Core MVP Complete
-
-**Test checklist:**
-- [ ] WhatsApp sandbox configured with ngrok URL
-- [ ] Send "farming schemes" → Get PM-KISAN response
-- [ ] Send "health age 65" → Get senior schemes
-- [ ] Send "xyz123" → Get "no schemes found" message
-- [ ] Send Hindi text → Get Hindi response
-- [ ] No crashes on any input
-
-**If all tests pass:** Move to Phase 2
-**If tests fail:** Debug before proceeding
-
----
-
-## PHASE 2: WINNING ADDITIONS (Priority: HIGH)
-
-### Task 9: Build Landing Page
-**Time:** 3 hours
-**Dependencies:** Checkpoint 1 passed
-
-**File:** `src/app/page.tsx`
-
-**Sections to include:**
-1. Hero with CTA
-2. Problem statement (with statistics)
-3. How it works (3 steps)
-4. Try it now (instructions + QR code)
-5. Scheme browser (list of 30 schemes)
-6. Impact metrics
-
-**Code framework:**
-```typescript
-import { Scheme } from '@/types/scheme';
-import schemesData from '../../public/schemes.json';
-
-export default function Home() {
-  const schemes: Scheme[] = schemesData.schemes;
-  
-  return (
-    <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-50 to-blue-50 py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">
-            Find Government Schemes<br/>
-            <span className="text-green-600">In Your Language</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            ₹1.84 lakh crore in welfare funds goes unclaimed. 
-            We're changing that with WhatsApp.
-          </p>
-          <a 
-            href="https://wa.me/14155238886?text=join%20YOUR-CODE" 
-            className="bg-green-600 text-white px-8 py-4 rounded-lg text-lg font-bold hover:bg-green-700"
-          >
-            Try WhatsApp Bot →
-          </a>
-        </div>
-      </section>
-      
-      {/* Stats */}
-      {/* How it works */}
-      {/* Scheme browser */}
-    </main>
-  );
-}
+**Expected Output:**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Message>Found 3 scheme(s) for you:...</Message>
+</Response>
 ```
 
-**Acceptance:**
-- ✅ Responsive design (mobile + desktop)
-- ✅ All 30 schemes displayed
-- ✅ Working WhatsApp link
-- ✅ Statistics included
-- ✅ Clean, professional look
+**Check Logs:**
+```
+Received message: farming schemes age 35
+Extracted entities - Age: 35, Income: undefined
+Detected language: en
+Found 3 matching schemes
+```
 
-**Requirements:** R8
-
----
-
-### Task 10: Add Translation (Optional)
-**Time:** 2 hours
-**Dependencies:** Checkpoint 1 passed
-
-**File:** `src/lib/translator.ts`
-
-**Instructions:**
-Use Google Translate API to translate final responses.
-Only implement if time permits.
-
-**Requirements:** R10
+**Acceptance Criteria:**
+- ✅ No TypeScript errors
+- ✅ Server starts without crashes
+- ✅ Curl returns TwiML
+- ✅ Logs show correct flow
+- ✅ If language is 'en', no translation call
 
 ---
 
-### Task 11: Add Admin Dashboard (Optional)
-**Time:** 3 hours
-**Dependencies:** Task 9
+### Task 11: ngrok Testing (CRITICAL)
 
-**File:** `src/app/admin/page.tsx`
+**Time:** 45 minutes
+**Dependencies:** Task 10 complete
+**Priority:** CRITICAL (Must work before deployment)
 
-**Only build if:**
-- All other tasks complete
-- 4+ hours remaining
-- No critical bugs
+#### Step 1: Install & Start ngrok (10 minutes)
 
-**Requirements:** R11
+**Option A: Using npx (No installation)**
+```bash
+npx ngrok http 3000
+```
+
+**Option B: Install globally**
+```bash
+npm install -g ngrok
+ngrok http 3000
+```
+
+**Expected Output:**
+```
+ngrok                                                                           
+
+Session Status                online
+Account                       your@email.com (Plan: Free)
+Version                       3.x.x
+Region                        India (in)
+Latency                       -
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    https://abc123.ngrok-free.app -> http://localhost:3000
+
+Connections                   ttl     opn     rt1     rt5     p50     p90
+                              0       0       0.00    0.00    0.00    0.00
+```
+
+**COPY THIS URL:** `https://abc123.ngrok-free.app`
+
+**Important:** Keep this terminal open! If you close it, the tunnel stops.
+
+#### Step 2: Configure Twilio Webhook (10 minutes)
+
+**Manual Steps:**
+1. Go to https://console.twilio.com/
+2. Click **Messaging** in left sidebar
+3. Click **Try it out** → **Send a WhatsApp message**
+4. Scroll to **Sandbox Settings**
+5. Find **"When a message comes in"** field
+6. Enter: `https://YOUR-NGROK-URL/api/webhook`
+   - Replace YOUR-NGROK-URL with your actual ngrok URL
+   - Example: `https://abc123.ngrok-free.app/api/webhook`
+7. Click **Save**
+
+**Verify Configuration:**
+- Webhook URL should show your ngrok URL
+- Method should be POST
+- Status should be Active
+
+#### Step 3: Join Twilio Sandbox (5 minutes)
+
+**On Your Phone:**
+1. Open WhatsApp
+2. Add this number to contacts: **+1 415 523 8886**
+   - Save as "Twilio Sandbox" or similar
+3. Send a message: `join <your-code>`
+   - Your code is shown in Twilio Console
+   - Example: `join happy-tiger`
+4. You should receive: "You are now connected to your Twilio Sandbox"
+
+#### Step 4: Test End-to-End (15 minutes)
+
+**Test 1: Simple English Query**
+```
+You send: farming schemes
+Expected: Response with PM-KISAN and 2 other schemes
+```
+
+**Check ngrok logs:**
+- In ngrok terminal, you should see incoming POST request
+- Status: 200
+- Path: /api/webhook
+
+**Check Next.js logs:**
+```
+Received message: farming schemes
+Detected language: en
+Found 3 matching schemes
+```
+
+**Test 2: With Eligibility**
+```
+You send: health age 65 income 10000
+Expected: Response with age-appropriate health schemes
+```
+
+**Test 3: Hindi Query**
+```
+You send: खेती योजना
+Expected: Response in Hindi (Sarvam.ai translated)
+```
+
+**Check logs:**
+```
+Received message: खेती योजना
+Detected language: hi
+Found X matching schemes
+Translating to hi using Sarvam.ai
+```
+
+**Test 4: Tamil Query (if you know Tamil)**
+```
+You send: விவசாய திட்டங்கள்
+Expected: Response in Tamil
+```
+
+**Test 5: No Match**
+```
+You send: xyz123
+Expected: "Sorry, no schemes found..."
+```
+
+**Test 6: Error Handling**
+```
+You send: (empty message or special characters)
+Expected: Graceful error message
+```
+
+#### Step 5: Record Demo Video (5 minutes)
+
+**While testing:**
+1. **Screen record your phone** (iOS: built-in, Android: use screen recorder app)
+2. Show these interactions:
+   - English query → English response
+   - Hindi query → Hindi response
+   - Show eligibility filtering working
+3. **Save this video** for presentation backup
+
+**Recording Tips:**
+- Clean up phone UI (turn on Do Not Disturb)
+- Good lighting on screen
+- Steady hand or use tripod/stand
+- Portrait orientation
+- Keep video under 60 seconds
+
+#### Acceptance Criteria:
+
+- ✅ WhatsApp message reaches webhook
+- ✅ English queries work
+- ✅ Hindi queries get translated responses
+- ✅ Eligibility filtering works (age, income)
+- ✅ Error handling works (no crashes)
+- ✅ Response time < 3 seconds
+- ✅ Demo video recorded
+
+**If ANY test fails:**
+- Check ngrok is still running
+- Check Twilio webhook URL is correct
+- Check .env.local has SARVAM_API_KEY
+- Check Next.js logs for errors
+- Check ngrok dashboard: http://127.0.0.1:4040
 
 ---
 
-## PHASE 3: PRESENTATION (Priority: CRITICAL)
+### Task 12: Deploy to Vercel (CRITICAL)
 
-### Task 12: Create Demo Video
+**Time:** 30 minutes
+**Dependencies:** Task 11 passed
+**Priority:** CRITICAL
+
+#### Step 1: Prepare for Deployment (5 minutes)
+
+**Check .gitignore includes:**
+```
+.env
+.env.local
+.env*.local
+```
+
+**Commit everything:**
+```bash
+git add .
+git commit -m "Add Sarvam.ai translation + 31 schemes - ready for deploy"
+git push origin main
+```
+
+**If you haven't initialized git:**
+```bash
+git init
+git add .
+git commit -m "Initial commit - SarkarConnect MVP"
+git branch -M main
+git remote add origin YOUR_GITHUB_REPO_URL
+git push -u origin main
+```
+
+#### Step 2: Deploy to Vercel (10 minutes)
+
+**Manual Steps:**
+1. Go to https://vercel.com/
+2. Click **"Add New..."** → **"Project"**
+3. Click **"Import Git Repository"**
+4. Select your GitHub repo
+5. Vercel will auto-detect Next.js
+6. Click **"Deploy"**
+
+**Wait for deployment (2-3 minutes)**
+
+You'll see:
+- Building... ⏳
+- Deployed! ✅
+- Your URL: `https://sarkarconnect.vercel.app` (or similar)
+
+#### Step 3: Add Environment Variables (5 minutes)
+
+**After deployment:**
+1. Go to your project in Vercel
+2. Click **"Settings"**
+3. Click **"Environment Variables"**
+4. Add variable:
+   - **Name:** `SARVAM_API_KEY`
+   - **Value:** (paste your Sarvam.ai API key)
+   - **Environments:** Production, Preview, Development (check all)
+5. Click **"Save"**
+
+**IMPORTANT:** After adding env variable, you must **redeploy**:
+1. Go to **"Deployments"** tab
+2. Click **"..."** on latest deployment
+3. Click **"Redeploy"**
+
+#### Step 4: Update Twilio Webhook (5 minutes)
+
+**In Twilio Console:**
+1. Go to **Messaging** → **Try it out** → **Send a WhatsApp message**
+2. Scroll to **Sandbox Settings**
+3. Update **"When a message comes in"**:
+   - **FROM:** `https://abc123.ngrok-free.app/api/webhook`
+   - **TO:** `https://sarkarconnect.vercel.app/api/webhook`
+     - (Use YOUR actual Vercel URL)
+4. Click **"Save"**
+
+**You can now stop ngrok** (Ctrl+C in that terminal)
+
+#### Step 5: Test Production Deployment (5 minutes)
+
+**On WhatsApp:**
+1. Send: `farming schemes age 35`
+2. **You should get response from production**
+
+**If it doesn't work:**
+- Check Vercel deployment logs
+- Verify SARVAM_API_KEY is set in Vercel
+- Check Twilio webhook URL is correct
+- Check for any errors in Vercel Function logs
+
+**Check Vercel Logs:**
+1. Go to Vercel dashboard
+2. Click your project
+3. Click **"Deployments"**
+4. Click latest deployment
+5. Click **"Functions"** tab
+6. Find `/api/webhook`
+7. Click to see logs
+
+#### Acceptance Criteria:
+
+- ✅ Deployed to Vercel successfully
+- ✅ SARVAM_API_KEY environment variable set
+- ✅ Twilio webhook updated to production URL
+- ✅ WhatsApp messages reach production
+- ✅ Responses working same as local
+- ✅ Translation working (Hindi, Tamil, etc.)
+
+**Your production URL:**
+Save this URL - you'll need it for presentation!
+
+---
+
+### Task 13: Update PPT with Demo Slide
+
+**Time:** 30 minutes
+**Dependencies:** Task 12 complete
+
+#### What to Add:
+
+**NEW SLIDE (Insert after Slide 3):**
+
+**Slide 3.5: "Live Demo"**
+
+**Left Side:**
+- Screenshot of WhatsApp showing English query
+- Screenshot of WhatsApp showing Hindi response
+- Highlight Sarvam.ai logo
+
+**Right Side:**
+- Large QR code linking to WhatsApp
+- Text: "Scan to Try Live"
+- WhatsApp number: +1 415 523 8886
+- Join code: (your code)
+
+**Bottom:**
+- "Powered by Sarvam.ai - Indian AI for 10+ Languages"
+
+**UPDATE SLIDE 4:**
+
+**Change this section:**
+```
+Stack:
+- Twilio WhatsApp API Integration
+- Deterministic Eligibility Engine (Rule-based, Explainable)
+- Lightweight AI for Clarity (Not Hallucination-prone)
+```
+
+**To:**
+```
+Stack:
+- Twilio WhatsApp API Integration
+- Sarvam.ai Translation (Indian AI - 10+ Regional Languages)
+- Entity Extraction Engine (Age, Income from Natural Language)
+- Intelligent Keyword Matching + Eligibility Filter
+- Next.js Serverless Backend (Vercel)
+```
+
+**Add architecture diagram showing:**
+```
+User → WhatsApp → Twilio → Next.js API
+                              ↓
+                   [Entity Extractor]
+                              ↓
+              [Keyword Matcher + Eligibility Filter]
+                              ↓
+                   [Sarvam.ai Translation]
+                              ↓
+              Response → Twilio → WhatsApp
+```
+
+#### Acceptance:
+- ✅ Demo slide added with screenshots
+- ✅ Sarvam.ai mentioned prominently
+- ✅ QR code working (test it!)
+- ✅ Architecture diagram clear
+
+---
+
+### Task 14: Record Final Demo Video
+
+**Time:** 45 minutes
+**Dependencies:** Task 12 complete
+
+#### Shot List:
+
+**Shot 1: Title (5 sec)**
+- Text: "SarkarConnect - From Awareness to Access"
+- Team name
+
+**Shot 2: Problem (15 sec)**
+- Text overlay: "₹1.84 lakh crore unclaimed"
+- Text: "40% farmers don't know about schemes"
+
+**Shot 3: WhatsApp Demo - English (20 sec)**
+- Screen record phone
+- Send: "farming schemes age 35"
+- Show response with 3 schemes
+- Highlight formatting (emojis, structure)
+
+**Shot 4: WhatsApp Demo - Hindi (15 sec)**
+- Send: "खेती योजना"
+- Show Hindi response
+- Text overlay: "Powered by Sarvam.ai (Indian AI)"
+
+**Shot 5: Landing Page (10 sec)**
+- Show browser with your deployed site
+- Scroll through scheme browser
+
+**Shot 6: Technology (15 sec)**
+- Architecture diagram animation
+- Text: "Next.js + Twilio + Sarvam.ai"
+
+**Shot 7: Impact (10 sec)**
+- Text overlays:
+  - "535M WhatsApp users"
+  - "₹0.30 per query"
+  - "31 schemes indexed"
+
+**Shot 8: Call to Action (10 sec)**
+- QR code
+- Text: "Try it now"
+- Your WhatsApp number
+
+**Total:** 90 seconds
+
+#### Tools:
+- **Recording:** Phone screen recorder
+- **Editing:** CapCut (mobile) or iMovie (Mac) or Shotcut (free, desktop)
+- **Export:** 1080p MP4
+
+#### Acceptance:
+- ✅ 60-90 second video
+- ✅ Clear demo of WhatsApp working
+- ✅ Shows Hindi translation
+- ✅ Professional quality (no shaky camera, clear audio)
+- ✅ Exported as MP4
+
+---
+
+### Task 15: Practice Pitch
+
 **Time:** 1 hour
+**Dependencies:** Tasks 13, 14 complete
 
-**Record:**
-1. WhatsApp conversation (30 seconds)
-2. Landing page tour (30 seconds)
-3. Voice input demo (if implemented) (30 seconds)
+#### 5-Minute Pitch Structure:
 
-**Requirements:** Demo backup if live fails
+**[0:00-1:00] Problem**
+- Open with story: "Meet Ramesh, a farmer..."
+- Statistics: "₹1.84 lakh crore unclaimed"
+- Why current solutions fail
+
+**[1:00-2:30] Solution + Demo**
+- "We built SarkarConnect"
+- WhatsApp-first approach
+- Play demo video OR live demo
+- Emphasize: "Works on ₹1,500 phones"
+
+**[2:30-3:30] Technology**
+- "Powered by Sarvam.ai - Indian AI"
+- Architecture: Simple, scalable, serverless
+- "31 schemes, <50ms matching"
+
+**[3:30-4:30] Impact + Differentiation**
+- "535M WhatsApp users vs 50M app users"
+- Table: WhatsApp vs Apps comparison
+- Cost: "₹0.30 per query"
+
+**[4:30-5:00] Close**
+- Future roadmap: Aadhaar integration, more languages
+- Call to action: "Scan QR, try it now"
+- "From awareness to access - in one message"
+
+#### Practice Routine:
+
+**Run 1-3:** Read through, no timer
+**Run 4-6:** Time yourself, adjust pacing
+**Run 7-9:** Practice with demo video
+**Run 10:** Final run, record yourself
+
+#### Q&A Prep:
+
+**Q: Why Sarvam.ai over Google Translate?**
+**A:** "Three reasons: 1) Built for Indian languages - better accuracy for Hindi, Tamil, regional variations. 2) Supports 10+ Indian languages natively. 3) Supports Atmanirbhar Bharat - Indian AI for Indian problems."
+
+**Q: How do you prevent AI hallucinations?**
+**A:** "We use AI strategically, not everywhere. Eligibility is rule-based (deterministic). Translation is the only AI component (Sarvam.ai). Matching uses keyword algorithms, not generative AI. This ensures accuracy where it matters most."
+
+**Q: Scalability?**
+**A:** "Current: 100 req/sec, 31 schemes, serverless Next.js on Vercel. For 1000+ schemes, we'd add search indexing (Elasticsearch). For 1M+ users, add Redis caching. Architecture designed for horizontal scaling."
+
+**Q: What if Sarvam.ai goes down?**
+**A:** "Graceful degradation. If API fails, we return English response. We can cache common translations. Can switch to Google Translate with one env variable change. In production, we'd add circuit breakers."
+
+**Q: Business model?**
+**A:** "Phase 1: Government partnership (free for citizens). Phase 2: B2B SaaS for NGOs, CSR programs at ₹2.30 per query (₹0.30 cost + margin). Phase 3: Premium features (Aadhaar verification, application tracking)."
+
+#### Acceptance:
+- ✅ Can deliver 5-min pitch smoothly
+- ✅ Demo video plays without issues
+- ✅ Q&A answers memorized
+- ✅ Confident with live demo backup
 
 ---
 
-### Task 13: Create Presentation Slides
-**Time:** 2 hours
+## FINAL PRE-SUBMISSION CHECKLIST
 
-**5 slides:**
-1. Problem (with statistics)
-2. Solution (core features)
-3. Demo (live or video)
-4. Impact (reach + cost)
-5. Future scope
+**Code & Deployment:**
+- [ ] 31 schemes in schemes.json
+- [ ] Sarvam.ai integration working
+- [ ] Deployed to Vercel
+- [ ] Environment variables set
+- [ ] WhatsApp responding to queries
+- [ ] Hindi translation working
+- [ ] Other languages (Tamil, Telugu) working
 
-**Requirements:** Judging presentation
+**Demo Materials:**
+- [ ] Demo video recorded (90 sec)
+- [ ] PPT updated with demo slide
+- [ ] QR code tested and working
+- [ ] Screenshots of WhatsApp conversation
+- [ ] Architecture diagram added
 
----
+**Presentation:**
+- [ ] 5-min pitch practiced
+- [ ] Q&A answers prepared
+- [ ] Live demo tested on actual phone
+- [ ] Backup video ready if live fails
 
-### Task 14: Practice Pitch
-**Time:** 1 hour
-
-**Practice 10 times:**
-- 5-minute version
-- 3-minute version
-- 1-minute elevator pitch
-
----
-
-## FINAL CHECKLIST
-
-**Before demo:**
-- [ ] WhatsApp bot responding correctly
-- [ ] Landing page deployed (Vercel)
-- [ ] Demo video recorded (backup)
-- [ ] Presentation slides ready
-- [ ] Tested on judge's phone (if possible)
-- [ ] Have 2 friends ready to test during demo
-- [ ] Phone charged, WiFi tested
-- [ ] ngrok/deployed URL working
+**Testing:**
+- [ ] English query works
+- [ ] Hindi query works (Sarvam.ai)
+- [ ] Eligibility filtering works (age, income)
+- [ ] Error handling works (invalid input)
+- [ ] Response time < 3 seconds
+- [ ] Mobile responsive landing page
 
 ---
 
-## TIME ALLOCATION
+## DEBUGGING GUIDE
 
-**Phase 1 (Core MVP):** 10-12 hours
-- Task 1: 0.5h
-- Task 2: 0.25h
-- Task 3: 3h
-- Task 4: 1h
-- Task 5: 2h
-- Task 6: 0.5h
-- Task 7: 1.5h
-- Task 8: 2h
-- Testing: 1h
+### Issue: "Sarvam API returns 401 Unauthorized"
+**Solution:**
+1. Check SARVAM_API_KEY in .env.local
+2. Verify API key is correct (copy from Sarvam dashboard)
+3. In Vercel, check environment variable is set
+4. Redeploy after adding env variable
 
-**Phase 2 (Additions):** 3-6 hours
-- Task 9: 3h
-- Tasks 10-11: Optional
+### Issue: "Translation not working"
+**Solution:**
+1. Check console logs: "Translating to hi using Sarvam.ai"
+2. If not logging, language detection failed
+3. Check detectLanguage function
+4. Test with known Hindi text: "मैं किसान हूं"
 
-**Phase 3 (Presentation):** 4 hours
-- Tasks 12-14: 4h
+### Issue: "WhatsApp not responding"
+**Solution:**
+1. Check Twilio webhook URL is correct
+2. Verify it's HTTPS (ngrok or Vercel)
+3. Check webhook URL ends with /api/webhook
+4. Test with curl first locally
+5. Check Twilio console for errors
 
-**Buffer:** 2-4 hours for bugs and unexpected issues
+### Issue: "Deployment failed on Vercel"
+**Solution:**
+1. Check build logs in Vercel
+2. Ensure all dependencies in package.json
+3. Check TypeScript errors
+4. Verify .env variables locally work
+5. Try `npm run build` locally first
 
-**Total:** 22-24 hours
+### Issue: "Response is slow (>5 seconds)"
+**Solution:**
+1. Check Sarvam API response time
+2. Reduce number of schemes matched
+3. Add timeout to translation (fallback after 3s)
+4. Check Vercel function region (should be India)
+
+---
+
+## TIME BREAKDOWN (Remaining 6 Hours)
+
+**Hour 1: Sarvam.ai Integration**
+- Get API key: 15 min
+- Write code: 30 min
+- Test locally: 15 min
+
+**Hour 2: ngrok Testing**
+- Setup ngrok: 10 min
+- Configure Twilio: 10 min
+- End-to-end testing: 20 min
+- Record demo on phone: 20 min
+
+**Hour 3: Deployment**
+- Deploy to Vercel: 15 min
+- Configure env variables: 10 min
+- Update Twilio webhook: 5 min
+- Test production: 10 min
+- Fix any issues: 20 min
+
+**Hour 4: PPT & Demo Video**
+- Update PPT: 20 min
+- Record demo video: 30 min
+- Edit video: 10 min
+
+**Hour 5: Practice**
+- Practice pitch: 40 min
+- Q&A prep: 20 min
+
+**Hour 6: Buffer**
+- Fix last-minute bugs
+- Final testing
+- Relax before presentation
+
+---
+
+## SUCCESS CRITERIA
+
+**You WIN if:**
+- ✅ Live WhatsApp demo works
+- ✅ Sarvam.ai translation impresses judges
+- ✅ Clear differentiation (WhatsApp vs apps)
+- ✅ Professional presentation
+- ✅ Confident Q&A answers
+- ✅ 31 schemes show comprehensiveness
+
+**What Makes You STAND OUT:**
+- ✅ Indian AI (Sarvam.ai) - judges will LOVE this
+- ✅ Actually working demo (many teams won't)
+- ✅ Real accessibility (feature phones, regional languages)
+- ✅ Clear social impact (₹1.84L Cr unclaimed)
+
+---
+
+**NOW GO EXECUTE. 6 HOURS. YOU'VE GOT THIS.** 🚀

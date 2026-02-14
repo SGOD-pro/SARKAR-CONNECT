@@ -1,4 +1,4 @@
-# Design Document - AI for Bharat (AI-Optimized)
+# Design Document -  SARKAR-CONNECT (AI-Optimized)
 
 ## Project Overview
 
